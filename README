@@ -1,0 +1,16 @@
+libultralog
+
+How to build if a configure script is present:
+
+./configure
+make
+make install
+
+
+
+How to build if no configure script is present:
+
+./autogen
+./configure
+make
+make install
