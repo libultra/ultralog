@@ -60,6 +60,17 @@ namespace ulog {
     void set_log_level (Level log_level) noexcept;
 
     /**
+     * Set the maximum length of a single log message in bytes. The default is 2048.
+     * If the log message should exceed the maximum length it is truncated and
+     * the string "[...]" will be appended to the log message, thus making the
+     * total length of the message 2053 bytes.
+     * There is also a hadr coded minimum size of 32 bytes per message. Setting
+     * a maximum of lower than 32 will result in a maximum of 32.
+     * @param size The maximum size of a single log message.
+     */
+    void set_max_log_length (size_t size);
+
+    /**
      * Return the current log level.
      */
     Level get_log_level () noexcept;

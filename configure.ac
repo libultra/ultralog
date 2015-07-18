@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-AC_INIT([libultralog], [1.0.0], [ultralog@ultramarin.se])
+AC_INIT([libultralog], [1.1.0], [ultralog@ultramarin.se])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign dist-bzip2 subdir-objects])
 
 AC_PROG_CC
@@ -33,7 +33,7 @@ AC_CONFIG_MACRO_DIR([m4])
 AM_SILENT_RULES([yes])
 
 #
-# Release 1.0.0
+# Release 1.1.0
 #
 # Library interface version x:y:z
 #                           | | |
@@ -45,7 +45,7 @@ AM_SILENT_RULES([yes])
 #
 # Library version (CURRENT:REVISION:AGE)
 #
-LIBRARY_VERSION=1:0:0
+LIBRARY_VERSION=2:0:1
 AC_SUBST([LIBRARY_VERSION])
 
 #

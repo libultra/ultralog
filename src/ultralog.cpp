@@ -40,6 +40,9 @@ namespace ulog {
 
     static Level current_log_level {Level::info};
     static std::mutex log_mutex;
+    static char* log_buf {nullptr};
+    static size_t max_log_length {2048};
+    static constexpr size_t min_log_length {32};
     static log_callback_t log_callback {stdout_callback};
 
 
@@ -86,6 +89,21 @@ namespace ulog {
     void set_log_level (Level log_level) noexcept
     {
         current_log_level = log_level;
+    }
+
+
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    void set_max_log_length (size_t size)
+    {
+        std::lock_guard<std::mutex> lock (log_mutex);
+        if (size != max_log_length && size >= min_log_length) {
+            if (log_buf != nullptr)
+                delete[] log_buf;
+
+            max_log_length = size;
+            log_buf = new char[max_log_length];
+        }
     }
 
 
@@ -212,29 +230,19 @@ namespace ulog {
     static void do_log (Level log_level, const std::string& module, const std::string& format, va_list args) noexcept
     {
         std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+        std::lock_guard<std::mutex> lock (log_mutex);
 
-        std::array<char, 256>  static_buf;
-        char*  dynamic_buf {nullptr};
-        size_t dynamic_len {0};
-
-        auto buf_len = vsnprintf (static_buf.data(), static_buf.size(), format.c_str(), args);
-        if (buf_len < 0) {
-            sprintf (static_buf.data(), "<error creating log message>");
-            dynamic_buf = static_buf.data();
-        }else if (buf_len >= static_cast<int>(static_buf.size())) {
-            dynamic_len = buf_len + 4;
-            dynamic_buf = new char[dynamic_len];
-            vsnprintf (dynamic_buf, dynamic_len, format.c_str(), args);
-        }else{
-            dynamic_buf = static_buf.data();
+        if (log_buf == nullptr) {
+            log_buf = new char[max_log_length];
         }
 
-        log_mutex.lock ();
-        log_callback (log_level, now, module, std::string(dynamic_buf));
-        log_mutex.unlock ();
-
-        if (dynamic_len)
-            delete[] dynamic_buf;
+        auto log_len = vsnprintf (log_buf, max_log_length, format.c_str(), args);
+        if (log_len < 0)
+            log_callback (log_level, now, module, "<error creating log message>");
+        else if (static_cast<size_t>(log_len) >= max_log_length)
+            log_callback (log_level, now, module, std::string(log_buf) + std::string("[...]"));
+        else
+            log_callback (log_level, now, module, std::string(log_buf));
     }
 
 
