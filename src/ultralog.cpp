@@ -264,6 +264,7 @@ namespace ulog {
            << "[" << get_thread_id() << "] "
            << module << ": " << message << "\n";
         std::cout << ss.str();
+        std::cout.flush ();
     }
 
 
