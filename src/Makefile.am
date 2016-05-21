@@ -21,7 +21,7 @@ lib_LTLIBRARIES = libultralog.la
 libultralog_la_CPPFLAGS = -I$(srcdir)/include -I./include
 libultralog_la_LDFLAGS =
 
-libultralog_la_CXXFLAGS = -Wall -pipe -std=c++11 -g
+libultralog_la_CXXFLAGS = -Wall -pipe -std=c++11 -g -O2
 
 
 # CURRENT : REVISION : AGE

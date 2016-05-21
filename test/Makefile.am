@@ -19,7 +19,7 @@
 
 if ENABLE_TESTAPPS_SET
 
-AM_CXXFLAGS = -pipe -Wall -std=c++11 -I$(srcdir)/../src
+AM_CXXFLAGS = -pipe -Wall -std=c++11 -g -O2 -I$(srcdir)/../src
 LDADD = -L../src -lultralog
 
 
